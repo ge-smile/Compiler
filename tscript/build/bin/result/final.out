@@ -1,0 +1,140 @@
+-Infinity
+Infinity
+-Infinity
+-Infinity
+Infinity
+Infinity
+-Infinity
+NaN
+true
+false
+0
+false
+true
+true
+false
+false
+false
+frednull
+hello world
+Hello World
+Bob's string is single quote
+Sally likes to "Double Quote"
+
+
+Super
+Bowl
+Victory
+100
+-100
+-100
+10000
+10000
+false
+true
+true
+undefined
+NaN
+NaN
+NaN
+NaN
+true
+undefined
+1Fred
+Fred1
+2
+11
+Fred smells funny
+2
+2
+false
+false
+true
+
+true
+false
+false
+
+true
+false
+false
+true
+true
+false
+false
+false
+true
+false
+true
+false
+false
+true
+true
+false
+false
+true
+true
+false
+true
+false
+false
+true
+false
+false
+true
+false
+false
+true
+true
+false
+=======0. NaN, Infinity, and -Infinity values: =======
+NaN
+Infinity
+-Infinity
+
+========1. To Boolean Conversion: ======
+true !null == true
+true !undefined == true
+false false == false
+true true == true
+true !-0 == true
+true !0 == true
+true !NaN == true
+false !1 == false
+false !-1 == false
+false !Infinity == false
+false !-Infinity == false
+true !'' == true
+false !'abc' == false
+
+=========2. To Number Conversion: ======
+NaN undefined.toNumber() == NaN
+0 null.toNumber() == 0
+1 true.toNumber() == 1
+0 false.toNumber() == 0
+1 1 == 1
+100 1.e2 == 100
+1 0x1 == 1
+1 0X1 == 1
+NaN 'string'.toNumber() == NaN
+1 '0x1' == 1
+1 '0X1' == 1
+1 '1.0' == 1
+100 '1.e2' == 100
+
+==========3. To String Conversion: ======
+undefined ---> undefined
+null ---> null
+true ---> true
+false ---> false
+1 ---> 1
+100 ---> 100
+1 ---> 1
+1 --->1
+1e-11 --->1e-11
+0.0001 ---> 0.0001
+100000000000000000000 ----> 100000000000000000000
+1e+21 ----> 1e+21
+Infinity ---> Infinity
+-Infinity ---> -Infinity
+NaN ---> NaN

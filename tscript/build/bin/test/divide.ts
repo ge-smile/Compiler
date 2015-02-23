@@ -1,0 +1,10 @@
+var a = 5,b;
+b = a/-0;
+print b;
+print 2./(-0/-1);
+print 2./(0*-1);
+print 2./(-0 + -0);
+print 2./(0-0);
+print 2./(0.*0);
+print -2./0 + 2./-0;
+print 2./0 + 2./-0;

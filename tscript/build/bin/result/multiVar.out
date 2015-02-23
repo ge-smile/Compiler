@@ -1,0 +1,24 @@
+
+a: 
+10
+
+b: 
+10
+
+a+b: 
+20
+
+x+y+z, where x=5, y=x, z=y
+15
+
+x+y+z, where y = a + b * -3 - 2
+-12
+
+ u...v
+undefined
+undefined
+NaN
+NaN
+true
+false
+undefined
