@@ -8,7 +8,7 @@ import ts.Message;
  * 8.7</a>).
  *
  */
-final class TSEnvironmentReference extends TSReference
+public final class TSEnvironmentReference extends TSReference
 {
   private TSEnvironmentRecord base;
 
@@ -26,7 +26,7 @@ final class TSEnvironmentReference extends TSReference
   /** Is the reference not resolvable? That is, is the name not defined
    *  in the environment?
    */
-  boolean isUnresolvableReference()
+  public boolean isUnresolvableReference()
   {
     // base is always defined for environment reference
     // TODO: well it should be. but we don't support property references yet.

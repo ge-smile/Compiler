@@ -80,4 +80,70 @@ public class TreeVisitorBase<T> implements TreeVisitor<T> {
   public T visit(final StringLiteral stringLiteral) {
     return null;
   }
+
+  public T visit(final BlockStatement blockStatement) {
+    visitEach(blockStatement.getStatementList());
+    return null;
+  }
+
+  public T visit(EmptyStatement emptyStatement) {
+    return null;
+  }
+
+  public T visit(WhileStatement whileStatement) {
+    visitNode(whileStatement.getExpression());
+    visitNode(whileStatement.getStatement());
+    return null;
+  }
+
+  public T visit(IfStatement ifStatment) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(BreakStatement breakStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(ContinueStatement continueStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(ThrowStatement throwStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  public T visit(TryStatement tryStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  public T visit(CatchStatement catchStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(FinallyStatement finallyStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  public T visit(FunctionExpression functionExpression) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(CallExpression callexpression) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public T visit(ReturnStatement returnStatement) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+ 
 }

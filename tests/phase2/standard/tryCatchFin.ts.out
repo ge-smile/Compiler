@@ -1,0 +1,4 @@
+ten = undefined
+this shouldn't print
+Finally print something.
+Finally finished.

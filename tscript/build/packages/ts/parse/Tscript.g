@@ -51,34 +51,36 @@ statement
   returns [ Statement lval ]
   : v=varStatement
     { $lval = $v.lval; }
-  | e=expressionStatement
-    { $lval = $e.lval; }
+  | ex=expressionStatement
+    { $lval = $ex.lval; }
   | p=printStatement
     { $lval = $p.lval; }
-  | b=block
+  | b=blockStatement
     { $lval = $b.lval; }
-  | e=emptyStatement
-    { $lval = $e.lval; }
+  | em=emptyStatement
+    { $lval = $em.lval; }
   | i=iterationStatement
     { $lval = $i.lval; }
-  | if=ifStatement
-    { $lval = $if.lval; }
+  | ifs=ifStatement
+    { $lval = $ifs.lval; }
   | br=breakStatement
     { $lval = $br.lval; }
   | c=continueStatement
     { $lval = $c.lval; }
-  ｜ t=throwStatement
+  | t=throwStatement
     { $lval = $t.lval; }
-  | try=tryStatement
-    { $lval = $try.lval; }
+  | ty=tryStatement
+    { $lval = $ty.lval; }
+  | r=returnStatement
+    { $lval = $r.lval; }
   ;
   
-block
+blockStatement
   returns [ Statement lval ]
   : LBRACE RBRACE
     { $lval = buildBlockStatement(loc($start), null); }
-  | LBRACE s=statementList RBRACE
-    { $lval = buildBlockStatement(loc($start), $s.lval); }
+  | LBRACE sl=statementList RBRACE
+    { $lval = buildBlockStatement(loc($start), $sl.lval); }
   ;
 
 emptyStatement
@@ -89,50 +91,70 @@ emptyStatement
    
 iterationStatement
    returns [ Statement lval ]
-   : WHILE LPAREN e=expression RPAREN
-   { $lval = buildWhileStatement(loc($start)); }
+   : WHILE LPAREN e=expression RPAREN s=statement
+   { $lval = buildWhileStatement(loc($start), $e.lval, $s.lval); }
    ;
    
 ifStatement
 	 returns [Statement lval]
-	 : IF LPAREN e=expression RPAREN s1=statement else s2=statement
-	 { $lval = buildifStatement(loc($start), s1, s2); }
+	 : IF LPAREN e=expression RPAREN s1=statement ELSE s2=statement
+	 { $lval = buildIfStatement(loc($start), $e.lval, $s1.lval, $s2.lval); }
 	 | IF LPAREN e=expression RPAREN s1=statement
-	 { $lval = buildifStatement(loc($start), s1, null); } 
+	 { $lval = buildIfStatement(loc($start), $e.lval, $s1.lval, null); } 
 	 ;
 
 breakStatement
    returns [Statement lval]
    : BREAK SEMICOLON
    { $lval = buildBreakStatement(loc($start), null); }
-   | BREAK i=identifier SEMICOLON
-   { $lval = buildBreakStatement(loc($start),i); }
+   | BREAK IDENTIFIER SEMICOLON
+   { $lval = buildBreakStatement(loc($start), $IDENTIFIER.text); }
    ;
     
 continueStatement
    returns [Statement lval]
    : CONTINUE SEMICOLON
    { $lval = buildContinueStatement(loc($start), null); }
-   | CONTINUE i=identifier SEMICOLON
-   { $lval = buildContinueStatement(loc($start), i); }
+   | CONTINUE IDENTIFIER SEMICOLON
+   { $lval = buildContinueStatement(loc($start), $IDENTIFIER.text); }
    ;
 
 throwStatement
    returns [Statement lval]
    : THROW e=expression SEMICOLON
-   { $lval = buildThrowStatement(loc($start), e); }
-   ;
-   
-tryStatement
-   returns [Statement lval]
-   : TRY b=block CATCH
-   { $lval = ; }
-   | TRY b=block FINALLY
-   { $lval = ; }
-   | TRY b=block CATCH FINALLY
-   { $lval = ; }
+   { $lval = buildThrowStatement(loc($start), $e.lval); }
    ;
 
+tryStatement
+	 returns [Statement lval]
+	 : TRY b=blockStatement c=catchStatement
+	 { $lval = buildTryStatement(loc($start), $b.lval, $c.lval, null); }
+	 | TRY b=blockStatement f=finallyStatement
+	 { $lval = buildTryStatement(loc($start), $b.lval, null, $f.lval); }
+	 | TRY b=blockStatement c=catchStatement f=finallyStatement
+	 { $lval = buildTryStatement(loc($start), $b.lval, $c.lval, $f.lval); }
+	 ;
+
+catchStatement
+	 returns [Statement lval]
+	 : CATCH LPAREN IDENTIFIER RPAREN b=blockStatement
+	 { $lval = buildCatchStatement(loc($start), $IDENTIFIER.text, $b.lval); }
+	 ;
+	 
+finallyStatement
+	 returns [Statement lval]
+	 : FINALLY b=blockStatement
+	 { $lval = buildFinallyStatement(loc($start), $b.lval);}
+	 ;
+
+returnStatement
+	 returns [Statement lval]
+	 : RETURN SEMICOLON
+	 { $lval = buildReturnStatement(loc($start), null); }
+	 | RETURN e=expression SEMICOLON
+	 { $lval = buildReturnStatement(loc($start), $e.lval); }
+	 ; 
+	  
 varStatement
   returns [ Statement lval ]
   : VAR v=variableDeclarationList SEMICOLON
@@ -193,10 +215,84 @@ assignmentExpression
   
 leftHandSideExpression
   returns [Expression lval]
-  : p=primaryExpression
- 		{ $lval = $p.lval; }
+  : m=memberExpression
+ 		{ $lval = $m.lval; }
+ 	| c=callExpression
+ 	  { $lval = $c.lval; }
   ;
+
+memberExpression
+	returns [Expression lval]
+	: p=primaryExpression
+	 	{ $lval = $p.lval; }
+	| f=functionExpression
+	  { $lval = $f.lval; }
+	;
 	
+functionExpression
+  returns [Expression lval]
+  : FUNCTION IDENTIFIER LPAREN fpl=formalParameterList RPAREN 
+    LBRACE fb=functionBody RBRACE 
+    { $lval = buildFunctionExpression(loc($start), $IDENTIFIER.text, 
+    			$fpl.lval, $fb.lval); }
+  | FUNCTION IDENTIFIER LPAREN RPAREN 
+    LBRACE fb=functionBody RBRACE 
+    { $lval = buildFunctionExpression(loc($start), $IDENTIFIER.text, 
+    			null, $fb.lval); }
+  | FUNCTION LPAREN fpl=formalParameterList RPAREN
+    LBRACE fb=functionBody RBRACE 
+    { $lval = buildFunctionExpression(loc($start), null, 
+    			$fpl.lval, $fb.lval); }
+  | FUNCTION LPAREN RPAREN
+    LBRACE fb=functionBody RBRACE 
+    { $lval = buildFunctionExpression(loc($start), null, 
+    			null, $fb.lval); }	
+  ;
+
+formalParameterList
+  returns [ List<String> lval ]
+  : IDENTIFIER
+    { $lval = new ArrayList<String>(); 
+      $lval.add($IDENTIFIER.text); }
+  | fList=formalParameterList COMMA IDENTIFIER
+    { $fList.lval.add($IDENTIFIER.text);
+      $lval = $fList.lval; }
+  ;
+  
+functionBody
+  returns [List<Statement> lval]
+  : sl = statementList
+  	{ $lval = $sl.lval; }
+  |
+    { $lval = null; }
+  ;
+
+callExpression
+	returns [Expression lval]
+	:  m=memberExpression a=arguments
+	  { $lval = buildCallExpression(loc($start), $m.lval, $a.lval); }
+	|  c=callExpression a=arguments
+	  { $lval = buildCallExpression(loc($start), $c.lval, $a.lval); }
+	;
+
+arguments
+	returns [List<Expression> lval]
+  : LPAREN RPAREN
+    { $lval = null; }
+  | LPAREN aL=argumentList RPAREN
+    { $lval = $aL.lval; }
+  ;
+  
+argumentList
+	returns [List<Expression> lval]
+	: a=assignmentExpression
+	  { $lval = new ArrayList<Expression>();
+	    $lval.add($a.lval); }
+	| aL=argumentList COMMA a=assignmentExpression
+	  { $aL.lval.add($a.lval);
+	    $lval = $aL.lval; }
+	; 
+
 additiveExpression
   returns [ Expression lval ]
   : m=multiplicativeExpression
@@ -391,8 +487,11 @@ FINALLY : 'finally';
 THROW : 'throw';
 IF : 'if';
 WHILE : 'while';
-
+ELSE : 'else';
+FUNCTION : 'function';
+RETURN : 'return';
 IDENTIFIER : IdentifierCharacters;
+
 
 // skip whitespace and comments
 

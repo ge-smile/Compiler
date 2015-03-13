@@ -1,0 +1,16 @@
+try block 0
+    try block 1
+        previous catch: 0
+        this catch: 1
+            try block 2
+            previous catch: 1
+            this catch: 2
+        err: ReferenceError: nest2 is not defined
+        nest2 is now out of scope
+    err: ReferenceError: nest1 is not defined
+    nest1 is now out of scope
+err: ReferenceError: nest0 is not defined
+nest0 is now out of scope
+num: 10
+something: idk
+test complete  <---------------------------------------

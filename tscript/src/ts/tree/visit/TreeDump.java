@@ -106,5 +106,120 @@ public final class TreeDump extends TreeVisitorBase<Object> {
     }
     return null;
   }
+  
+  public Object visit(final BlockStatement blockStatement) {
+    indent();
+    writer.println("BlockStatement");
+    indentation += increment;
+    if(blockStatement.getStatementList() != null){
+      visitEach(blockStatement.getStatementList());
+    }
+    indentation -= increment;
+    return null;
+  }
+  
+  public Object visit(final EmptyStatement emptyStatement) {
+    indent();
+    writer.println("EmptyStatement");
+    return null;
+  }
 
+  public Object visit(final WhileStatement whileStatement) {
+    indent();
+    writer.println("WhileStatement ");
+    visitNode(whileStatement.getExpression());
+    visitNode(whileStatement.getStatement());
+    return null;
+  }
+  
+  public Object visit(final BreakStatement breakStatement) {
+    indent();
+    writer.println("BreakStatement");
+    return null;
+  }
+  
+  public Object visit(final ContinueStatement continueStatement){
+    indent();
+    writer.println("continueStatement");
+    return null;
+  }
+  
+  public Object visit(final ThrowStatement throwStatement){
+    indent();
+    writer.println("throwStatement");
+    return null;
+  }
+  
+  public Object visit(final TryStatement tryStatement) {
+    indent();
+    writer.println("tryStatement");
+    indentation += increment;
+    Statement catchStatement = tryStatement.getCatchStatement();
+    Statement finallyStatement = tryStatement.getFinallyStatement();
+    if(catchStatement != null){
+      visitNode(catchStatement);
+    }
+    
+    if(finallyStatement != null){
+      visitNode(finallyStatement);
+    }
+    
+    indentation -= increment;
+    return null;
+  }
+  
+  public Object visit(final CatchStatement catchStatement){
+    indent();
+    writer.println("catchStatement");
+    return null;
+  }
+  
+  public Object visit(final FinallyStatement finallyStatement){
+    indent();
+    writer.println("finallyStatement");
+    return null;
+  }
+  
+  public Object visit(final FunctionExpression functionExpression){
+    indent();
+    writer.println("functionExpression");
+    indentation += increment;
+    visitEach(functionExpression.getFunctionBody());
+    indentation -= increment;
+    return null;
+  }
+  
+  public Object visit(final CallExpression callExpression){
+    indent();
+    writer.println("CallExpression");
+    indentation += increment;
+    Expression exp = callExpression.getMemberExpression();
+    List<Expression> aug = callExpression.getArguments();
+    if(exp != null)
+    {
+      visitNode(callExpression.getMemberExpression());
+    }
+    
+    if(aug != null)
+    {
+    visitEach(callExpression.getArguments());
+    }
+    indentation -= increment;
+    return null;
+  }
+
+  public Object visit(final ReturnStatement returnStatement){
+    indent();
+    writer.println("ReturnStatement");
+    indentation += increment;
+    Expression exp = returnStatement.getExpression();
+    if(exp != null)
+    {
+      visitNode(exp);
+    }
+    indentation -= increment;
+    
+    return null;
+  }
+  
 }

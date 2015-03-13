@@ -1,7 +1,5 @@
-Need to Handle
+1. continue — have a problem
+2. while ( ( g = g + 1) < 100 ) ;
+3. continue/break ＋ identifier
+4. 
 
-3. How to solve multiplication and division infinity
-4. HexIntegerLiteral
-5. fragment DecimalDigits : DecimalDigit | (DecimalDigit DecimalDigits);
-6. write nan
-7. addition and minus

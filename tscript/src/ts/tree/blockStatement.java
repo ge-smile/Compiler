@@ -10,19 +10,19 @@ import ts.tree.visit.TreeVisitor;
  * AST block statement node
  *
  */
-public final class blockStatement extends Statement
+public final class BlockStatement extends Statement
 {
-  private List<Statement> statement;
+  private List<Statement> statementList;
 
-  public blockStatement(final Location loc, List<Statement> statement)
+  public BlockStatement(final Location loc, List<Statement> statementList)
   {
     super(loc);
-    this.statement = statement;
+    this.statementList = statementList;
   }
 
-  public List<Statement> getStatement()
+  public List<Statement> getStatementList()
   {
-    return statement;
+    return statementList;
   }
 
   public <T> T apply(TreeVisitor<T> visitor)

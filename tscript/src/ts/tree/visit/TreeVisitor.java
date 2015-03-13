@@ -31,5 +31,31 @@ public interface TreeVisitor<T>
   T visit(VarStatement varStatement);
   
   T visit(VarDeclaration varDeclaration);
+  
+  T visit(BlockStatement blockStatement);
+  
+  T visit(EmptyStatement emptyStatement);
+  
+  T visit(WhileStatement whileStatement);
+  
+  T visit(IfStatement ifStatment);
+  
+  T visit(BreakStatement breakStatement);
+  
+  T visit(ContinueStatement continueStatement);
+  
+  T visit(ThrowStatement throwStatement);
+  
+  T visit(TryStatement tryStatement);
+  
+  T visit(CatchStatement catchStatement);
+  
+  T visit(FinallyStatement finalllyStatement);
+  
+  T visit(FunctionExpression functionExpression);
+    
+  T visit(CallExpression callexpression);
+
+  T visit(ReturnStatement returnStatement);
 }
 

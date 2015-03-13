@@ -1,0 +1,5 @@
+error msg: ReferenceError: x is not defined
+ten = 10
+error msg: ReferenceError: err is not defined
+Finally print something.
+Finally finished.

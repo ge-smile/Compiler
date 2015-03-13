@@ -1,0 +1,23 @@
+starting test ---------------->
+exp was true
+
+
+ 10 is the same as...
+( 5 + 5 )
+
+
+10 is true
+
+
+0 is not true
+
+
+set a to 10
+a is still ten
+a is 10
+b is undefined
+a is 10
+only one line should print( below to ...
+ a <= 10
+...here
+finished testing <--------------------

@@ -1,0 +1,26 @@
+starting test ----------------------->
+ print 1-13, but skip 5
+i is 1
+i to bool is true
+i is 2
+i to bool is true
+i is 3
+i to bool is true
+i is 4
+i to bool is true
+i is 6
+i to bool is true
+i is 7
+i to bool is true
+i is 8
+i to bool is true
+i is 9
+i to bool is true
+i is 10
+i to bool is true
+i is 11
+i to bool is true
+i is 12
+i to bool is true
+i is 13
+i to bool is true

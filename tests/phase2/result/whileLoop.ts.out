@@ -1,0 +1,40 @@
+ i = 10
+while i > 0
+print i--
+     i is 10
+     i is 9
+     i is 8
+     i is 7
+     i is 6
+     i is 5
+     i is 4
+     i is 3
+     i is 2
+     i is 1
+loop done
+i is 0
+ crazy loop...
+one
+lower half
+two
+lower half
+three
+lower half
+4
+upper half
+5
+upper half
+6
+upper half
+... done
+
+
+modulo
+9 mod 2 = 1
+
+
+do nothing loop...
+...nothing done.
+
+finished........................
+

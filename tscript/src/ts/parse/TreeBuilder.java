@@ -17,17 +17,222 @@ public class TreeBuilder {
    *
    * @param loc
    *          location in source code (file, line, column)
-   * @param statement
-   *          a list of varDeclaration statement
-   * @return tree node for a var statement.
+   * @param statementList
+   *          a list of statement
+   * @return tree node for a block statement.
    */
-  
+
   public static Statement buildBlockStatement(final Location loc,
-      final List<Statement> statement){
-    Message.log("TreeBuilder: BlockStatement (" + statement.toString() + ")");
-    return new BlockStatement(loc, statement);
+      final List<Statement> statementList) {
+    Message.log("TreeBuilder: BlockStatement");
+    if (statementList != null) {
+      for (Statement statement : statementList) {
+        Message.log("TreeBuilder: " + statement.getClass().toString());
+      }
+    }
+    return new BlockStatement(loc, statementList);
+  }
+
+  /**
+   * Build a "empty" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @return tree node for an empty statement.
+   */
+  public static Statement buildEmptyStatement(final Location loc) {
+    Message.log("TreeBuilder: EmptyStatement");
+    return new EmptyStatement(loc);
+  }
+
+  /**
+   * Build a "while" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param expression
+   *          an expression
+   * @param statement
+   *          a statement
+   * @return tree node for a while statement.
+   */
+  public static Statement buildWhileStatement(final Location loc,
+      final Expression expression, final Statement statement) {
+    Message.log("TreeBuilder: WhileStatement");
+    Message.log("TreeBuilder: ");
+    return new WhileStatement(loc, expression, statement);
+  }
+
+  /**
+   * Build a "if" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param expression
+   *          an expression
+   * @param statement1
+   *          a statement
+   * @param statement2
+   *          a statement
+   * @return tree node for a if statement.
+   */
+  public static Statement buildIfStatement(final Location loc,
+      final Expression expression, final Statement statement1,
+      final Statement statement2) {
+    Message.log("TreeBuilder: IfSatement");
+    return new IfStatement(loc, expression, statement1, statement2);
+  }
+
+  /**
+   * Build a "break" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param i
+   *          an identifier
+   * @return tree node for a break statement.
+   */
+  public static Statement buildBreakStatement(final Location loc, final String i) {
+    Message.log("TreeBuilder: BreakStatement (" + i + ")");
+    return new BreakStatement(loc, i);
+  }
+
+  /**
+   * Build a "continue" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param i
+   *          an identifier
+   * @return tree node for a continue statement.
+   */
+  public static Statement buildContinueStatement(final Location loc,
+      final String i) {
+    Message.log("TreeBuilder: ContinueStatement (" + i + ")");
+    return new ContinueStatement(loc, i);
+  }
+
+  /**
+   * Build a "throw" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param expression
+   *          an expression
+   * @return tree node for a throw statement.
+   */
+  public static Statement buildThrowStatement(final Location loc,
+      final Expression expression) {
+    Message.log("TreeBuilder: ThrowStatement ");
+    return new ThrowStatement(loc, expression);
+  }
+
+  /**
+   * Build a "try" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param blockStatement
+   *          a block statement
+   * @param catchStatement
+   *          a catch statement
+   * @param finallyStatement
+   *          a finally statement
+   * @return tree node for a try statement.
+   */
+  public static Statement buildTryStatement(final Location loc,
+      Statement blockStatement, Statement catchStatement,
+      Statement finallyStatement) {
+    Message.log("TreeBuilder: TryStatement ");
+    return new TryStatement(loc, blockStatement, catchStatement,
+        finallyStatement);
+  }
+
+  /**
+   * Build a "catch" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param identifier
+   *          an identifier
+   * @param blockStatement
+   *          a block statement
+   * @return tree node for a try statement.
+   */
+  public static Statement buildCatchStatement(final Location loc,
+      String identifier, Statement blockStatement) {
+    Message.log("TreeBuilder: catchStatement ");
+    return new CatchStatement(loc, identifier, blockStatement);
+  }
+
+  /**
+   * Build a "finally" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param blockStatement
+   *          a block statement
+   * @return tree node for a finally statement.
+   */
+  public static Statement buildFinallyStatement(final Location loc,
+      Statement blockStatement) {
+    Message.log("TreeBuilder: finallyStatement ");
+    return new FinallyStatement(loc, blockStatement);
   }
   
+  /**
+   * Build a "return" statement.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param expression
+   *          an expression
+   * @return tree node for a return statement.
+   */
+  public static Statement buildReturnStatement(final Location loc,
+      Expression expression) {
+    Message.log("TreeBuilder: ReturnStatement ");
+    return new ReturnStatement(loc, expression);
+  }
+  
+  /**
+   * Build a "function" Expression.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param identifier
+   *          a string
+   * @param fpl
+   *          List of String
+   * @param fb
+   *          Function Body
+   * @return tree node for a functionExpression.
+   */
+  public static Expression buildFunctionExpression(final Location loc,
+      final String identifier, List<String> fpl,final List<Statement> fb) {
+    Message.log("TreeBuilder: functionExpression");
+    return new FunctionExpression( loc, identifier, fpl, fb );
+  }
+  
+  
+  /**
+   * Build a "function" Expression.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param memberExpression
+   *          a member expression
+   * @param argumentList
+   *          a list of arguments
+   * @return tree node for a call expression.
+   */
+  public static Expression buildCallExpression(final Location loc, 
+      final Expression memberExpression, final List<Expression> argumentList) {
+    Message.log("TreeBuilder: CallExpression");
+    return new CallExpression( loc, memberExpression, argumentList);
+  }
+  
+ 
   /**
    * Build a "var" statement.
    *
@@ -39,10 +244,9 @@ public class TreeBuilder {
    */
   public static Statement buildVarStatement(final Location loc,
       final List<Expression> statement) {
-    Message.log("TreeBuilder: VarStatement (" + statement.toString() + ")");
+    Message.log("TreeBuilder: VarStatement");
     return new VarStatement(loc, statement);
   }
-  
 
   /**
    * Build a "var" declaration
@@ -143,10 +347,9 @@ public class TreeBuilder {
     try {
       d = Double.parseDouble(value);
     } catch (NumberFormatException nfe) {
-      try{
+      try {
         d = Long.decode(value);
-      }
-      catch (NumberFormatException e) {
+      } catch (NumberFormatException e) {
         Message.bug(loc, "numeric literal not parsable");
       }
     }
@@ -171,7 +374,7 @@ public class TreeBuilder {
       s = s.replace("\"", "\\\"");
       return new StringLiteral(loc, s);
     }
-    
+
     return new StringLiteral(loc, s);
   }
 
