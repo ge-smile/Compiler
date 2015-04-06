@@ -224,12 +224,48 @@ public class TreeBuilder {
    *          a member expression
    * @param argumentList
    *          a list of arguments
+   * @param identifier
+   *          a string
    * @return tree node for a call expression.
    */
   public static Expression buildCallExpression(final Location loc, 
-      final Expression memberExpression, final List<Expression> argumentList) {
+      final Expression memberExpression, final List<Expression> argumentList,
+      final String identifier) {
     Message.log("TreeBuilder: CallExpression");
-    return new CallExpression( loc, memberExpression, argumentList);
+    return new CallExpression( loc, memberExpression, argumentList, identifier);
+  }
+  
+  
+  /**
+   * Build a "member" Expression.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param memberExpression
+   *          an expression
+   * @param identifier
+   *          a String
+   * @return tree node for a member expression.
+   */
+  public static Expression buildMemberExpression(final Location loc, 
+      final Expression memberExpression, final String identifier) {
+    Message.log("TreeBuilder: MemberExpression");
+    return new PropertyAccessor(loc, memberExpression, identifier);
+  }
+  
+  /**
+   * Build a "member" Expression.
+   *
+   * @param loc
+   *          location in source code (file, line, column)
+   * @param newExpression
+   *          a new expression
+   * @return tree node for a new expression.
+   */
+  public static Expression buildNewExpression(final Location loc, 
+      final Expression newExpression, final List<Expression> argumentList) {
+    Message.log("TreeBuilder: NewExpression");
+    return new NewExpression(loc, newExpression, argumentList);
   }
   
  
@@ -324,13 +360,25 @@ public class TreeBuilder {
    *          location in source code (file, line, column)
    * @param name
    *          name of the identifier.
-   * @return tree node for an identififier.
+   * @return tree node for an identifier.
    */
   public static Expression buildIdentifier(final Location loc, final String name) {
     Message.log("TreeBuilder: Identifier (" + name + ")");
     return new Identifier(loc, name);
   }
 
+  /**
+   * Build a this expression.
+   *
+   * @param loc
+   *          location in source code 
+   * @return tree node for a thisExpression.
+   */
+  public static Expression buildThisExpression(final Location loc){
+    Message.log("TreeBuilder: ThisExpression"); 
+    return new ThisExpression(loc);
+  }
+  
   /**
    * Build a numeric literal expression. Converts the String for the value to a
    * double.
@@ -429,7 +477,7 @@ public class TreeBuilder {
 
   // helper function to detect "reference expected" errors
   private static boolean producesReference(Node node) {
-    if (node instanceof Identifier) {
+    if (node instanceof Identifier || node instanceof PropertyAccessor) {
       return true;
     }
     return false;

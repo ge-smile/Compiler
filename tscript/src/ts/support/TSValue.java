@@ -566,4 +566,8 @@ public abstract class TSValue {
     return false;
   }
 
+  public boolean isCallable()
+  {
+    return false;
+  }
 }

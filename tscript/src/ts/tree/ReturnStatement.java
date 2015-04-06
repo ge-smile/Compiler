@@ -2,7 +2,6 @@
 package ts.tree;
 
 import ts.Location;
-import ts.Message;
 import ts.tree.visit.TreeVisitor;
 
 /**

@@ -215,11 +215,19 @@ assignmentExpression
   
 leftHandSideExpression
   returns [Expression lval]
-  : m=memberExpression
- 		{ $lval = $m.lval; }
- 	| c=callExpression
+  : c=callExpression
  	  { $lval = $c.lval; }
+ 	| n=newExpression
+ 	  { $lval = $n.lval; }
   ;
+
+newExpression
+ 	returns [Expression lval]
+	: m=memberExpression
+	 	{ $lval = $m.lval; }
+	| NEW n=newExpression
+	  { $lval = buildNewExpression(loc($start), $n.lval, null); }
+	; 
 
 memberExpression
 	returns [Expression lval]
@@ -227,6 +235,10 @@ memberExpression
 	 	{ $lval = $p.lval; }
 	| f=functionExpression
 	  { $lval = $f.lval; }
+	| m=memberExpression POINT IDENTIFIER
+	  { $lval = buildMemberExpression(loc($start), $m.lval, $IDENTIFIER.text); }
+	| NEW m=memberExpression a=arguments
+	  { $lval = buildNewExpression(loc($start), $m.lval, $a.lval); }
 	;
 	
 functionExpression
@@ -269,10 +281,12 @@ functionBody
 
 callExpression
 	returns [Expression lval]
-	:  m=memberExpression a=arguments
-	  { $lval = buildCallExpression(loc($start), $m.lval, $a.lval); }
-	|  c=callExpression a=arguments
-	  { $lval = buildCallExpression(loc($start), $c.lval, $a.lval); }
+	: m=memberExpression a=arguments
+	  { $lval = buildCallExpression(loc($start), $m.lval, $a.lval, null); }
+	| c=callExpression a=arguments
+	  { $lval = buildCallExpression(loc($start), $c.lval, $a.lval, null); }
+	| c=callExpression POINT IDENTIFIER
+	  { $lval = buildCallExpression(loc($start), $c.lval, null, $IDENTIFIER.text); }
 	;
 
 arguments
@@ -364,7 +378,9 @@ shiftExpression
  
 primaryExpression
   returns [ Expression lval ]
-  : IDENTIFIER
+  : THIS
+  	{ $lval = buildThisExpression(loc($start)); }
+  | IDENTIFIER
     { $lval = buildIdentifier(loc($start), $IDENTIFIER.text); }
   | NUMERIC_LITERAL
     { $lval = buildNumericLiteral(loc($start), $NUMERIC_LITERAL.text); }
@@ -458,7 +474,7 @@ STRING_LITERAL : ["]DoubleStringCharacter*["]
 
 BOOLEANL_LITERAL: 'true'|'false';
 NULLL_LITERAL: 'null';
-NaN_LITERAL: 'NaN';
+THIS : 'this';
 
 LPAREN : [(];
 RPAREN : [)];
@@ -475,6 +491,7 @@ LARGER : [>];
 COMMA : [,];
 LBRACE : [{];
 RBRACE : [}];
+POINT : [.];
 
 // keywords start here
 PRINT : 'print';
@@ -490,8 +507,8 @@ WHILE : 'while';
 ELSE : 'else';
 FUNCTION : 'function';
 RETURN : 'return';
+NEW : 'new';
 IDENTIFIER : IdentifierCharacters;
-
 
 // skip whitespace and comments
 

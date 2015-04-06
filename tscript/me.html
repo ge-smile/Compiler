@@ -4,15 +4,42 @@
 <body>
 <pre>
 Program
-  Var tab
+  ExpressionStatement
     ASSIGN
-      Identifier tab
-Var ind
+      Identifier F
+      NumericLiteral 42.0
+  ExpressionStatement
     ASSIGN
-      Identifier ind
-      Identifier tab
-  tryStatement
-    catchStatement
-    finallyStatement
+      MemberExpression
+      ThisExpreesion
+      NumericLiteral 42.0
   PrintStatement
+    MemberExpression
+    ThisExpreesion
+  ExpressionStatement
+    ASSIGN
+      Identifier x
+      NewExpression
+      Identifier testThis
+  ExpressionStatement
+    CallExpression
+      MemberExpression
+      Identifier x
+  ExpressionStatement
+    ASSIGN
+      Identifier x
+      NewExpression
+      Identifier F
+  ExpressionStatement
+    ASSIGN
+      MemberExpression
+      Identifier x
+      Identifier testThis
+  ExpressionStatement
+    CallExpression
+      MemberExpression
+      Identifier x
+  PrintStatement
+    MemberExpression
+    Identifier x
 </pre>

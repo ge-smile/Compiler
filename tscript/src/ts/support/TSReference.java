@@ -9,7 +9,7 @@ package ts.support;
  * The derived classes are:
  * <ul>
  * <li> TSEnvironmentReference
- * <li> TSpropertyReference - not implemented yet.
+ * <li> TSpropertyReference
  * </ul>
  *
  */

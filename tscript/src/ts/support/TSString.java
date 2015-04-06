@@ -1,7 +1,5 @@
 package ts.support;
 
-import ts.Message;
-
 /**
  * Represents (Tscript) String values (<a
  * href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.4">ELS 8.4</a>).

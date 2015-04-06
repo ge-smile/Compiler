@@ -1,8 +1,6 @@
 
 package ts.tree;
 
-import java.util.List;
-
 import ts.Location;
 import ts.tree.visit.TreeVisitor;
 

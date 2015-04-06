@@ -6,6 +6,7 @@ package ts.support;
  */
 public abstract class TSPrimitive extends TSValue
 {
+  
 }
 
 

@@ -145,5 +145,22 @@ public class TreeVisitorBase<T> implements TreeVisitor<T> {
     // TODO Auto-generated method stub
     return null;
   }
+
+  public T visit(NewExpression newExpression) {
+    // TODO Auto-generated method stub
+    visitNode(newExpression.getExpression());
+    return null;
+  }
+  
+  public T visit(PropertyAccessor memberExpression){
+    visitNode(memberExpression.getExpression());
+    return null;
+  }
+
+  public T visit(ThisExpression thisExpression) {
+    // TODO Auto-generated method stub
+    visitNode(thisExpression);
+    return null;
+  }
  
 }

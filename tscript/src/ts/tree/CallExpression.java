@@ -14,13 +14,15 @@ public class CallExpression extends Expression
 {
   private Expression memberExpression;
   private List<Expression> argumentList;
+  private String identifier;
 
   public CallExpression(final Location loc, final Expression memberExpression,
-             final List<Expression> argumentList)
+             final List<Expression> argumentList, final String identifier)
   {
     super(loc);
     this.memberExpression = memberExpression;
     this.argumentList = argumentList;
+    this.identifier = identifier;
   }
 
   public Expression getMemberExpression()
@@ -31,6 +33,11 @@ public class CallExpression extends Expression
   public List<Expression> getArguments()
   {
     return argumentList;
+  }
+  
+  public String getIdentifier()
+  {
+    return identifier;
   }
 
   public <T> T apply(TreeVisitor<T> visitor)

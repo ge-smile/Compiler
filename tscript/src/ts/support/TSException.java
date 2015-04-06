@@ -1,13 +1,16 @@
 package ts.support;
 
-import ts.Message;
-
 /**
  * The class for Tscript References for TS Exception
  *
  */
-public final class TSException extends Exception
+public final class TSException extends RuntimeException
 {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+  
   private TSValue val;
 
   /** Create a Reference for a name in an environment.
@@ -21,6 +24,12 @@ public final class TSException extends Exception
     this.val = val;
   }
   
+  public TSException(final String val)
+  {
+    super();
+    this.val = TSString.create(val);
+  }
+    
   public TSValue getValue(){
     return val;
   }

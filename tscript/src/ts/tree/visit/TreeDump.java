@@ -1,5 +1,6 @@
 package ts.tree.visit;
 
+import ts.Message;
 import ts.tree.*;
 
 import java.io.PrintWriter;
@@ -208,6 +209,28 @@ public final class TreeDump extends TreeVisitorBase<Object> {
     return null;
   }
 
+  public Object visit(final NewExpression newExpression){
+    indent();
+    writer.println("NewExpression");
+    Expression exp = newExpression.getExpression();
+    if(exp != null){
+      visitNode(exp);
+    }
+    return null;
+  }
+  
+  public Object visit(final PropertyAccessor memberExpression){
+    indent();
+    writer.println("MemberExpression");
+    Expression exp = memberExpression.getExpression();
+    if(exp != null){
+      visitNode(exp);
+    }
+    
+    return null;
+  }
+  
+  
   public Object visit(final ReturnStatement returnStatement){
     indent();
     writer.println("ReturnStatement");
@@ -221,5 +244,13 @@ public final class TreeDump extends TreeVisitorBase<Object> {
     
     return null;
   }
+  
+  public Object visit(final ThisExpression thisExpression){
+    indent();
+    writer.println("ThisExpreesion");
+    return null;
+  }
+
+  
   
 }

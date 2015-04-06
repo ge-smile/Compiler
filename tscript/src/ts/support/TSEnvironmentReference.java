@@ -40,7 +40,7 @@ public final class TSEnvironmentReference extends TSReference
   /** Environment references cannot be property references so this always
    *  returns false.
    */
-  boolean isPropertyReference()
+  public boolean isPropertyReference()
   {
     return false;
   }
@@ -75,6 +75,8 @@ public final class TSEnvironmentReference extends TSReference
     base.setMutableBinding(this.getReferencedName(), value);
     return;
   }
+
+  /** */
 
 }
 

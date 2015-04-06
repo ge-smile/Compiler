@@ -31,6 +31,7 @@ public final class TSLexicalEnvironment
   {
     if (environmentRecord.hasBinding(name))
     {
+
       return new TSEnvironmentReference(name, environmentRecord);
     }
     else
@@ -43,7 +44,7 @@ public final class TSLexicalEnvironment
         // setting the base of an environment reference to null to indicate
         // that the identified is not declared
         // TODO: fix this when properties are being supported
-        return new TSEnvironmentReference(name, null);
+        return new TSPropertyReference(name.getInternal(), TSUndefined.value);
       }
       return outerEnvironment.getIdentifierReference(name);
     }
@@ -132,6 +133,18 @@ public final class TSLexicalEnvironment
   {
     return new TSLexicalEnvironment(new TSDeclarativeEnvironmentRecord(),
       outer);
+  }
+  
+  /** Create a new object environment, which must be placed inside
+   *  a new lexical environment.
+   *
+   *  @param object the enclosing object
+   *  @return the new lexical environment which holds the new declarative
+   *     environment
+   */
+  public static TSLexicalEnvironment newObjectEnvironment(final TSObject object)
+  {
+    return new TSLexicalEnvironment(new TSObjectEnvironmentRecord(object, true), null);
   }
 
 }

@@ -340,8 +340,8 @@ public class Main {
       try {
         classLoader.run(baseFileName, new String[0]);
       } catch (Throwable ex) {
-        Message.fatal("uncaught Java exception in execution of generated code");
         ex.printStackTrace();
+        Message.fatal("uncaught Java exception in execution of generated code");
       }
     }
   }

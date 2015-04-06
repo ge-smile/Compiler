@@ -3,8 +3,10 @@ package ts.support;
 public class TSFunctionObject extends TSObject{
   private TSCode tsCode;
   private TSLexicalEnvironment tsLexicalEnvironment;
+  private TSValue ths; 
   
-  private TSFunctionObject(TSCode tsCode, TSLexicalEnvironment tsLexicalEnvironment){
+  public TSFunctionObject(TSCode tsCode, TSLexicalEnvironment tsLexicalEnvironment){
+    super(null);
     this.tsCode = tsCode;
     this.tsLexicalEnvironment = tsLexicalEnvironment;
   }
@@ -37,6 +39,11 @@ public class TSFunctionObject extends TSObject{
   {
     return new TSFunctionObject(tsCode,
         tsLexicalEnvironment);
+  }
+  
+  public void setThis(TSValue ths)
+  {
+    this.ths = ths;
   }
   
 }

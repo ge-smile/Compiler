@@ -6,9 +6,6 @@
 package ts.tree.visit;
 
 import ts.Message;
-import ts.Main;
-import ts.support.TSLexicalEnvironment;
-import ts.support.TSValue;
 import ts.tree.*;
 
 import java.util.ArrayList;
@@ -109,6 +106,9 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
   // how much to increment the indentation by at each level
   // using an increment of zero would mean no indentation
   private final int increment;
+  
+  // global environment
+  private String globalEnvironment = "globalEnvironment";
 
   // increase indentation by one level
   private void increaseIndentation() {
@@ -148,14 +148,15 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
     increaseIndentation();
     ret += indent() + "try{\n";
     increaseIndentation();
-    ret += indent() + "TSLexicalEnvironment " + "lexEnviron" + " = "
-        + "TSLexicalEnvironment.newDeclarativeEnvironment(null);\n";
+    ret += indent() + "TSLexicalEnvironment " + "lexEnviron" +
+            " = TSLexicalEnvironment.newObjectEnvironment(TSGlobalObject.globalObject);\n";
     currentLexical = "lexEnviron";
     currentVariableLexical = "lexEnviron";
-    ret += indent()
-        + "lexEnviron.declareVariable(TSString.create(\"undefined\"),false);\n";
+  
     return ret;
   }
+  
+
 
   // generate and return epilogue code for main method body
   public String mainEpilogue() {
@@ -199,6 +200,13 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
       ret.add(visitNode((Tree) node));
     }
     return ret;
+  }
+  
+  // gen and return code for this expression
+  public Encode.ReturnValue visit(final ThisExpression thisExpression)
+  {
+    String code = indent() + "Message.setLineNumber(" + thisExpression.getLineNumber() + ");\n";
+    return new Encode.ReturnValue("TSGlobalObject.globalObject", code);
   }
 
   // gen and return code for a unary operator
@@ -315,15 +323,33 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
   // generate code for Identifier;
   public Encode.ReturnValue visit(final Identifier identifier) {
     String result = getTemp();
-    String code = indent() + "TSEnvironmentReference " + result + " = (TSEnvironmentReference)" + currentLexical
+    String code = indent() + "TSValue " + result + " = " + currentLexical
         + ".getIdentifierReference(TSString.create(\"" + identifier.getName()
         + "\"));\n";
-    
+    /*
     code += indent() + "if(" + result + ".isUnresolvableReference())\n" +
-            indent() + "{\n" +
-            indent() +  "throw new TSException(TSString.create(\"ReferenceError: " + identifier.getName() +
-            " is not defined\"));\n" +
-            indent() + "}\n";
+            indent() + "{\n";
+    increaseIndentation();
+    /*code += indent() +  "throw new TSException(TSString.create(\"ReferenceError: " + identifier.getName() +
+            " is not defined\"));\n";*/
+    /*
+    code += indent() + "if(TSGlobalObject.globalObject.hasProperty(TSString.create(\"" +
+        identifier.getName() + "\"))){\n";
+    increaseIndentation();
+    code += indent() + result + ".putValue(" + "TSGlobalObject.globalObject.getProperty(\""
+        + identifier.getName() +"\"));\n";
+    decreaseIndentation();
+    code += indent() +"}\n";
+    code += indent() + "else{\n";
+    increaseIndentation();
+    code += indent() + "TSGlobalObject.globalObject.putProperty(\"" + identifier.getName() 
+        + "\", TSUndefined.value);\n";
+    decreaseIndentation();
+    code += indent() +"}\n";
+    
+    decreaseIndentation();
+    code += indent() +"}\n";
+    */
 
     return new Encode.ReturnValue(result, code);
   }
@@ -397,7 +423,6 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
 
   // generate code for BlockStatement
   public Encode.ReturnValue visit(final BlockStatement blockStatement) {
-
     increaseIndentation();
     String code = indent() + "Message.setLineNumber("
         + blockStatement.getLineNumber() + ");\n";
@@ -619,6 +644,7 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
     
     code += indent() + "TSLexicalEnvironment " + lexicalTemp + " = "
         + "TSLexicalEnvironment.newDeclarativeEnvironment(env);\n";
+    
     if (functionExpression.getFormalParameterList() != null) {
       int length = functionExpression.getFormalParameterList().size();
 
@@ -690,6 +716,19 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
     code += indent() + "TSFunctionObject " + name + " = (TSFunctionObject)"
         + func.result + ".getValue();\n";
 
+    String ref = getTemp();
+    code += indent() + "TSValue " + ref + " = " + func.result + ".getValue();\n"; 
+    
+    String ths = getTemp();
+    code += indent() + "TSObject " + ths + " = null;\n";
+    code += indent() + "if(" + ref + " instanceof TSObject){\n";
+    code += indent() + ths + " = " + ref + ";\n";
+    code += indent() + "}\n";
+    code += indent() + "else{\n";
+    code += indent() + "}\n";
+    
+
+    
     // build argument List
     String argumentList = getTemp();
     String returnTemp = getTemp();
@@ -721,6 +760,49 @@ public final class Encode extends TreeVisitorBase<Encode.ReturnValue> {
 
     //Message.log(code);
     return new Encode.ReturnValue(returnTemp, code);
+  }
+  
+  public Encode.ReturnValue visit(final NewExpression newExpression){
+    String code = indent() + "Message.setLineNumber("
+        + newExpression.getLineNumber() + ");\n";
+    Encode.ReturnValue func = visitNode(newExpression.getExpression());
+    code += func.code;
+    String name = getTemp();
+ 
+    
+    code += indent() + "TSObject " + name + ";\n"; // + " = new TSObject();\n";
+    String ref = getTemp();
+    code += indent() + "TSValue " + ref + " = " + func.result + ".getValue();\n"; 
+    
+    // expression is function object
+    code += indent() + "if(" + ref + " instanceof TSFunctionObject){\n";
+    code += indent() + name + " = (TSObject)((TSFunctionObject)" + ref + ").functionCall(true, null, null);\n";
+    code += indent() + "}\n";
+    code += indent() + "else{\n";
+    code += indent() + name  + " = new TSObject();\n";
+    code += indent() + "}\n";
+    
+    code += indent() + "if(" + ref + " instanceof TSObject && ((TSObject)" +
+            ref + ").hasPrototype() ){\n";
+    increaseIndentation();
+    code += indent() + name + ".putPrototype(((TSObject)" + ref  +").getPrototype());\n";
+    decreaseIndentation();
+    code += indent() + "}\n";
+
+    return new Encode.ReturnValue(name, code);
+  }
+  
+  public Encode.ReturnValue visit(final PropertyAccessor propertyAccessor){
+    String code = indent() + "Message.setLineNumber("
+        + propertyAccessor.getLineNumber() + ");\n";
+    Encode.ReturnValue exp = visitNode(propertyAccessor.getExpression());
+    code += exp.code;
+    //Message.log(code);
+    String ref = getTemp();
+    code += indent() + "TSPropertyReference " + ref + " = "+ " new TSPropertyReference(\""
+        + propertyAccessor.getIdentifier() + "\", " + exp.result + ".getValue());\n";
+   
+    return new Encode.ReturnValue(ref, code);
   }
 
   public Encode.ReturnValue visit(final ReturnStatement returnStatement) {
